@@ -72,7 +72,7 @@ var BreadcrumbTOC=React.createClass({
 			var ancestor=this.state.ancestors[level] || 0;
 			var cur = children[ancestor] ;
 			var items=children.map(function(child){
-				return {t:toc[child].t,idx:child};
+				return {t:toc[child].t,idx:child,hit:toc[child].hit};
 			});
 			var selected=children.indexOf(cur);
 			if (selected==-1) selected=0;

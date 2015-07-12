@@ -21,7 +21,9 @@ var BreadCrumbDropdown=React.createClass({
 		this.props.onSelect&&this.props.onSelect(idx,this.props.items,this.props.level);
 	}
 	,renderItem:function(item,idx) {
-		return E(MenuItem,{key:idx,active:this.props.selected==idx,eventKey:idx},item.t);
+		var hit=null;
+		if (item.hit) hit=E("span",{className:"hl0 pull-right"},item.hit);
+		return E(MenuItem,{key:idx,active:this.props.selected==idx,eventKey:idx},item.t,hit);
 	}
 	,render:function(){
 		var title=this.props.items[this.props.selected].t;
