@@ -28,7 +28,7 @@ var BreadCrumbDropdown=React.createClass({
 	,render:function(){
 		var item=this.props.items[this.props.selected];
 		var title=item.t;
-		item.hit&&(title=[item.t,E("span",{className:"hl0 pull-right"},item.hit||"")]);
+		item.hit&&(title=[E("span",{key:1},item.t),E("span",{key:2,className:"hl0 pull-right"},item.hit||"")]);
 		return E(DropdownButton,{onSelect:this.onSelect,noCaret:true,title:title},
 			this.props.items.map(this.renderItem));
 	}

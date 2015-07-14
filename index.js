@@ -63,7 +63,7 @@ var BreadcrumbTOC=React.createClass({
 		this.setState({ancestors:ancestors});
 		//console.log(idx,children,level)
 	}
-	,renderCrumbs:function(item) {
+	,renderCrumbs:function() {
 		var dropdown=this.props.theme.dropdown;
 		var cur=0,toc=this.props.toc,out=[],level=0;
 		do {
