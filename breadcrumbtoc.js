@@ -1,4 +1,4 @@
-var React=require("react/addons");
+var React=require("react");
 var E=React.createElement;
 var PT=React.PropTypes;
 var buildToc = function(toc) {
@@ -35,8 +35,7 @@ var getChildren = function(toc,n) {
 	return out;
 }
 var BreadcrumbTOC=React.createClass({
-	mixins:[React.addons.pureRenderMixin]
-	,propTypes:{
+	propTypes:{
 		toc:PT.array.isRequired
 		,hits:PT.array
 		,theme:PT.object

@@ -1,4 +1,4 @@
-var React=require("react/addons");
+var React=require("react");
 var E=React.createElement;
 var PT=React.PropTypes;
 
@@ -7,8 +7,7 @@ var DropdownButton=require("react-bootstrap").DropdownButton;
 var MenuItem=require("react-bootstrap").MenuItem;
 
 var BreadCrumbDropdown=React.createClass({
-	mixins:[React.addons.pureRenderMixin]
-	,propTypes:{
+	propTypes:{
 		items:PT.array.isRequired
 		,selected:PT.number
 		,onSelect:PT.func
@@ -18,7 +17,7 @@ var BreadCrumbDropdown=React.createClass({
 	,getDefaultProp:function(){
 		return {items:[]}
 	}
-	,onSelect:function(idx) {
+	,onSelect:function(e,idx) {
 		this.props.onSelect&&this.props.onSelect(idx,this.props.items,this.props.level);
 	}
 	,renderKeyword:function(t) {
