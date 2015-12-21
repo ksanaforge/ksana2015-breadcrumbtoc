@@ -1,6 +1,6 @@
 {
   "name": "ksana2015-breadcrumbtoc",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "breadcrumb style Table of Content React pure component",
   "main": "index.js",
   "scripts": {
