@@ -38,10 +38,10 @@ var BreadcrumbTOC=React.createClass({
 	propTypes:{
 		toc:PT.array.isRequired
 		,hits:PT.array
-		,theme:PT.object
 		,onSelect:PT.func
 		,vpos:PT.number  //jump with vpos
 		,keyword:PT.string
+		,treenodeHits:PT.func
 	}
 	,componentWillReceiveProps:function(nextProps,nextState) {
 		if (nextProps.toc && !nextProps.toc.built) {
@@ -53,9 +53,6 @@ var BreadcrumbTOC=React.createClass({
 	}
 	,componentWillMount:function(){
 		buildToc(this.props.toc);
-	}
-	,getDefaultProps:function() {
-		return {theme:{}};
 	}
 	,getInitialState:function(){
 		return {};
@@ -75,7 +72,7 @@ var BreadcrumbTOC=React.createClass({
 		return tocitems.length-1;
 	}
 	,renderCrumbs:function() {
-		var dropdown=this.props.theme.dropdown;
+		var dropdown=require("./dropdown_bs");
 		var cur=0,toc=this.props.toc,out=[],level=0;
 		do {
 			var children=getChildren(toc,cur);
@@ -83,9 +80,15 @@ var BreadcrumbTOC=React.createClass({
 
 			var selected = this.closestItem(children,this.props.vpos) ;
 			cur=children[selected];
+
 			var items=children.map(function(child){
-				return {t:toc[child].t,idx:child,hit:toc[child].hit,vpos:toc[child].vpos};
-			});
+				var hit=toc[child].hit;
+				if (this.props.hits && isNaN(hit) && this.props.treenodeHits) {
+					hit=this.props.treenodeHits( toc,this.props.hits,child);
+				}
+
+				return {t:toc[child].t,idx:child,hit:hit,vpos:toc[child].vpos};
+			}.bind(this));
 			out.push(E(dropdown,{onSelect:this.onSelect,level:level,
 				key:out.length,selected:selected,items:items,keyword:this.props.keyword}) );
 			//if (out.length>5) break;
@@ -94,8 +97,7 @@ var BreadcrumbTOC=React.createClass({
 		return out;
 	}
 	,render:function(){
-		var container=this.props.theme.container || "div";
-		return E(container,null,this.renderCrumbs());
+		return E("div",{},this.renderCrumbs());
 	}
 })
 module.exports=BreadcrumbTOC;
