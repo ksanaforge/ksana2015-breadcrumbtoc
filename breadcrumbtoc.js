@@ -42,6 +42,8 @@ var BreadcrumbTOC=React.createClass({
 		,vpos:PT.number  //jump with vpos
 		,keyword:PT.string
 		,treenodeHits:PT.func
+		,buttonClass:PT.string
+		,separator:PT.node
 	}
 	,componentWillReceiveProps:function(nextProps,nextState) {
 		if (nextProps.toc && !nextProps.toc.built) {
@@ -90,6 +92,7 @@ var BreadcrumbTOC=React.createClass({
 				return {t:toc[child].t,idx:child,hit:hit,vpos:toc[child].vpos};
 			}.bind(this));
 			out.push(E(dropdown,{onSelect:this.onSelect,level:level,
+				separator:this.props.separator,buttonClass:this.props.buttonClass,
 				key:out.length,selected:selected,items:items,keyword:this.props.keyword}) );
 			//if (out.length>5) break;
 			level++;

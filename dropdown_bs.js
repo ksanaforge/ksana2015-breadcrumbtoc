@@ -57,8 +57,9 @@ var BreadCrumbDropdown=React.createClass({
 
 		item.hit&&(title=[E("span",{key:1},item.t),E("span",{key:2,className:"hl0 pull-right"},item.hit||"")]);
 		return E("span",{className:"dropdown"},
-				E("button",{key:"drop","data-toggle":"dropdown",className:"btn btn-default",
+				E("button",{key:"drop","data-toggle":"dropdown",className:this.props.buttonClass||"btn btn-default",
 					onClick:this.open}, this.props.items[this.props.selected].t ),
+				this.props.separator,
 				E("ul",{className:"dropdown-menu open",id:"for_shutting_warning_up"
 					,onBlur:this.blur
 					,noCaret:true,title:this.renderKeyword(title)},
