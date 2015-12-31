@@ -44,15 +44,13 @@ var BreadCrumbDropdown=React.createClass({
 		var t=this.renderKeyword(item.t);
 		return E("li",{key:idx,"data-idx":idx},E("a",{style:style,onClick:this.onSelect},t,hit));
 	}
-	,blur:function(e){
-		e.target.parentElement.classList.remove("open");
-	}
+
 	,open:function(e){
 		e.target.parentElement.classList.add("open");
-		e.target.nextSibling.focus();
 	}
 	,render:function(){
 		var item=this.props.items[this.props.selected];
+		if (!item)return E("span");
 		var title=item.t;
 
 		item.hit&&(title=[E("span",{key:1},item.t),E("span",{key:2,className:"hl0 pull-right"},item.hit||"")]);
@@ -60,9 +58,7 @@ var BreadCrumbDropdown=React.createClass({
 				E("button",{key:"drop","data-toggle":"dropdown",className:this.props.buttonClass||"btn btn-default",
 					onClick:this.open}, this.props.items[this.props.selected].t ),
 				this.props.separator,
-				E("ul",{className:"dropdown-menu open",id:"for_shutting_warning_up"
-					,onBlur:this.blur
-					,noCaret:true,title:this.renderKeyword(title)},
+				E("ul",{className:"dropdown-menu open",id:"for_shutting_warning_up",title:this.renderKeyword(title)},
 			this.props.items.map(this.renderItem)));
 	}
 });
