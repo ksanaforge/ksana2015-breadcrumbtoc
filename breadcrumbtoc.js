@@ -1,4 +1,13 @@
-var React=require("react");
+try {
+	var React=require("react-native");
+	var Dropdown=require("./dropdown");
+	var {View,Text} = React;
+} catch(e) {
+	var React=require("react");	
+	var Dropdown=require("./dropdown_bs");
+	var View="div"; 
+}
+
 var E=React.createElement;
 var PT=React.PropTypes;
 var buildToc = function(toc) {
@@ -74,7 +83,7 @@ var BreadcrumbTOC=React.createClass({
 		return tocitems.length-1;
 	}
 	,renderCrumbs:function() {
-		var dropdown=require("./dropdown_bs");
+		
 		var cur=0,toc=this.props.toc,out=[],level=0;
 		var children=getChildren(toc,cur),nextchildren;
 		do {
@@ -86,16 +95,20 @@ var BreadcrumbTOC=React.createClass({
 				if (this.props.hits && isNaN(hit) && this.props.treenodeHits) {
 					hit=this.props.treenodeHits( toc,this.props.hits,child);
 				}
-
 				return {t:toc[child].t,idx:child,hit:hit,vpos:toc[child].vpos};
+
 			}.bind(this));
 
 			nextchildren=getChildren(toc,cur);
 
-			out.push(E(dropdown,{onSelect:this.onSelect,level:level,
-				separator:nextchildren.length?this.props.separator:null,//last separator is not shown
-				buttonClass:this.props.buttonClass,
-				key:out.length,selected:selected,items:items,keyword:this.props.keyword}) );
+			out.push(
+				E(View,{key:out.length},
+					E(Dropdown,{onSelect:this.onSelect,level:level,
+					separator:nextchildren.length?this.props.separator:null,//last separator is not shown
+					buttonClass:this.props.buttonClass,
+					selected:selected,items:items,keyword:this.props.keyword})
+				)
+			); 
 			//if (out.length>5) break;
 			level++;
 			if (!nextchildren.length) break;
@@ -104,7 +117,12 @@ var BreadcrumbTOC=React.createClass({
 		return out;
 	}
 	,render:function(){
-		return E("div",{},this.renderCrumbs());
+		if (View==="div") {
+			return E(View,null,this.renderCrumbs());
+		} else {
+
+			return E(View,{flex:1,flexDirection:'row',flexWrap:'wrap'},this.renderCrumbs());
+		}
 	}
 })
 module.exports=BreadcrumbTOC;
