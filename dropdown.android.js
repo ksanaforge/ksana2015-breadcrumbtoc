@@ -35,7 +35,7 @@ var BreadCrumbDropdown=React.createClass({
 
 		var values=this.props.items.map(function(item){return item.t});
 
-		return E(Dropdown,{values:values, style:{ height: 20, width: this.itemHeight()},onChange:this.onSelect});
+		return E(Dropdown,{values:values, selected:this.props.selected,style:{ height: 20, width: this.itemHeight()},onChange:this.onSelect});
 	}
 });
 module.exports=BreadCrumbDropdown;
