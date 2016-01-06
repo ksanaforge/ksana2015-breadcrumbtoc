@@ -1,12 +1,19 @@
-try {
-	var React=require("react-native");
-	var Dropdown=require("./dropdown");
-	var {View,Text} = React;
-} catch(e) {
-	var React=require("react");	
-	var Dropdown=require("./dropdown_bs");
-	var View="div"; 
+var React,Dropdown,View;
+var pc=function(){
+	React=require("react");	
+	Dropdown=require("./dropdown_bs");
+	View="div"; 
 }
+
+try {
+	React=require("react-native");
+	Dropdown=require("./dropdown");//dropdown.android.js or dropdown.ios.js
+	View=React.View;
+	if (!View) pc();
+} catch(e) {
+	pc();
+}
+
 
 var E=React.createElement;
 var PT=React.PropTypes;
