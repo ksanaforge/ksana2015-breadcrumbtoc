@@ -19,23 +19,25 @@ var BreadCrumbDropdown=React.createClass({
 	,onSelect:function(opt) {
 		this.props.onSelect&&this.props.onSelect(opt.selected,this.props.items,this.props.level);
 	}
-	,itemHeight:function(){
+	,itemWidth:function(){
 		var {width,height}=React.Dimensions.get('window');
-		if (height>width) {
-			return Math.floor(width/this.props.itemPerRow)-5;
-		} else {
-			var ratio=width/height;
-			return Math.floor(width/this.props.itemPerRow*ratio)-5;
+		var ipr=this.props.itemPerRow;
+		if (height<width) ipr=Math.floor(this.props.itemPerRow*(width/height));
+		var w=Math.floor(width/ipr);
+
+		if (this.props.total===this.props.n+1 && this.props.total % ipr) {
+			var remain=ipr-this.props.total % ipr;
+			if (remain) w+=remain*w; 
 		}
+		return w;
 	}
 	,render:function(){
 		var item=this.props.items[this.props.selected];
-		if (!item)return E(View);
-		var title=item.t;
+		if (!item) return E(View);
 
 		var values=this.props.items.map(function(item){return item.t});
-
-		return E(Dropdown,{values:values, selected:this.props.selected,style:{ height: 20, width: this.itemHeight()},onChange:this.onSelect});
+		return E(Dropdown,{values:values, selected:this.props.selected,
+			style:{height:20, width: this.itemWidth()},onChange:this.onSelect});
 	}
 });
 module.exports=BreadCrumbDropdown;

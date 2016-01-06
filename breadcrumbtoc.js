@@ -20,13 +20,13 @@ var PT=React.PropTypes;
 var buildToc = function(toc) {
 	if (!toc || !toc.length || toc.built) return;
 	var depths=[];
- 	var prev=0;
+ 	var prev=0,j=0;
  	for (var i=0;i<toc.length;i++) delete toc[i].n;
 	for (var i=0;i<toc.length;i++) {
 	    var depth=toc[i].d||toc[i].depth;
 	    if (prev>depth) { //link to prev sibling
 	      if (depths[depth]) toc[depths[depth]].n = i;
-	      for (var j=depth;j<prev;j++) depths[j]=0;
+	      for (j=depth;j<prev;j++) depths[j]=0;
 	    }
     	depths[depth]=i;
     	prev=depth;
@@ -91,7 +91,7 @@ var BreadcrumbTOC=React.createClass({
 	}
 	,renderCrumbs:function() {
 		
-		var cur=0,toc=this.props.toc,out=[],level=0;
+		var cur=0,toc=this.props.toc,out=[],level=0,dropdowns=[];
 		var children=getChildren(toc,cur),nextchildren;
 		do {
 			var selected = this.closestItem(children,this.props.vpos) ;
@@ -107,20 +107,22 @@ var BreadcrumbTOC=React.createClass({
 			}.bind(this));
 
 			nextchildren=getChildren(toc,cur);
+			dropdowns.push({level:level,items:items,selected:selected,nextchildren:nextchildren});
 
-			out.push(
-				E(View,{key:out.length},
-					E(Dropdown,{onSelect:this.onSelect,level:level,
-					separator:nextchildren.length?this.props.separator:null,//last separator is not shown
-					buttonClass:this.props.buttonClass,
-					selected:selected,items:items,keyword:this.props.keyword})
-				)
-			); 
 			//if (out.length>5) break;
 			level++;
 			if (!nextchildren.length) break;
 			children=nextchildren;
 		} while (true);
+
+		out=dropdowns.map(function(d,idx){
+			return	E(View,{key:idx,style:{marginTop:4,marginBottom:4}},
+					E(Dropdown,{n:idx,total:dropdowns.length,onSelect:this.onSelect,level:d.level,
+					separator:d.nextchildren.length?this.props.separator:null,//last separator is not shown
+					buttonClass:this.props.buttonClass,
+					selected:d.selected,items:d.items,keyword:this.props.keyword})
+				)
+		}.bind(this));
 		return out;
 	}
 	,render:function(){
@@ -128,7 +130,7 @@ var BreadcrumbTOC=React.createClass({
 			return E(View,null,this.renderCrumbs());
 		} else {
 
-			return E(View,{flex:1,flexDirection:'row',flexWrap:'wrap'},this.renderCrumbs());
+			return E(View,{style:{flex:1,flexDirection:'row',flexWrap:'wrap'}},this.renderCrumbs());
 		}
 	}
 })
