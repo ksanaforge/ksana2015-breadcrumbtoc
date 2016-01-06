@@ -2,7 +2,7 @@ var React,Dropdown,View;
 var pc=function(){
 	React=require("react");	
 	Dropdown=require("./dropdown_bs");
-	View="div"; 
+	View="span"; 
 }
 
 try {
@@ -124,7 +124,7 @@ var BreadcrumbTOC=React.createClass({
 		return out;
 	}
 	,render:function(){
-		if (View==="div") {
+		if (View==="span") {
 			return E(View,null,this.renderCrumbs());
 		} else {
 
