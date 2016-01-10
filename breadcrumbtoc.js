@@ -1,16 +1,32 @@
-var React=require("react");
+var React,Dropdown,View;
+var pc=function(){
+	React=require("react");	
+	Dropdown=require("./dropdown_bs");
+	View="span"; 
+}
+
+try {
+	React=require("react-native");
+	Dropdown=require("./dropdown");//dropdown.android.js or dropdown.ios.js
+	View=React.View;
+	if (!View) pc();
+} catch(e) {
+	pc();
+}
+
+
 var E=React.createElement;
 var PT=React.PropTypes;
 var buildToc = function(toc) {
 	if (!toc || !toc.length || toc.built) return;
 	var depths=[];
- 	var prev=0;
+ 	var prev=0,j=0;
  	for (var i=0;i<toc.length;i++) delete toc[i].n;
 	for (var i=0;i<toc.length;i++) {
 	    var depth=toc[i].d||toc[i].depth;
 	    if (prev>depth) { //link to prev sibling
 	      if (depths[depth]) toc[depths[depth]].n = i;
-	      for (var j=depth;j<prev;j++) depths[j]=0;
+	      for (j=depth;j<prev;j++) depths[j]=0;
 	    }
     	depths[depth]=i;
     	prev=depth;
@@ -19,8 +35,10 @@ var buildToc = function(toc) {
 	return toc;
 }
 var getChildren = function(toc,n) {
+ 
 	if (!toc[n]||!toc[n+1] ||toc[n+1].d!==toc[n].d+1) return [];
 	var out=[],next=n+1;
+
 	while (next) {
 		out.push(next);
 		if (!toc[next+1])break;
@@ -71,40 +89,53 @@ var BreadcrumbTOC=React.createClass({
 		for (i=1;i<tocitems.length;i++) {
 			if (this.props.toc[tocitems[i]].vpos>=vpos) return i-1;
 		}
+
 		return tocitems.length-1;
 	}
 	,renderCrumbs:function() {
-		var dropdown=require("./dropdown_bs");
-		var cur=0,toc=this.props.toc,out=[],level=0;
+		
+		var cur=0,toc=this.props.toc,out=[],level=0,dropdowns=[];
 		var children=getChildren(toc,cur),nextchildren;
 		do {
-			var selected = this.closestItem(children,this.props.vpos) ;
-			cur=children[selected];
-
-			var items=children.map(function(child){
+				var selected = this.closestItem(children,this.props.vpos) ;
+				cur=children[selected];
+			
+				var items=children.map(function(child){
 				var hit=toc[child].hit;
 				if (this.props.hits && isNaN(hit) && this.props.treenodeHits) {
 					hit=this.props.treenodeHits( toc,this.props.hits,child);
 				}
-
 				return {t:toc[child].t,idx:child,hit:hit,vpos:toc[child].vpos};
+
 			}.bind(this));
 
 			nextchildren=getChildren(toc,cur);
+			dropdowns.push({level:level,items:items,selected:selected,nextchildren:nextchildren});
 
-			out.push(E(dropdown,{onSelect:this.onSelect,level:level,
-				separator:nextchildren.length?this.props.separator:null,//last separator is not shown
-				buttonClass:this.props.buttonClass,
-				key:out.length,selected:selected,items:items,keyword:this.props.keyword}) );
 			//if (out.length>5) break;
 			level++;
 			if (!nextchildren.length) break;
 			children=nextchildren;
 		} while (true);
+
+		out=dropdowns.map(function(d,idx){
+			return	E(View,{key:idx,style:{marginTop:4,marginBottom:4}},
+					E(Dropdown,{n:idx,total:dropdowns.length,onSelect:this.onSelect,level:d.level,
+					separator:d.nextchildren.length?this.props.separator:null,//last separator is not shown
+					buttonClass:this.props.buttonClass,
+					selected:d.selected,items:d.items,keyword:this.props.keyword})
+				)
+		}.bind(this));
+
 		return out;
 	}
 	,render:function(){
-		return E("div",{},this.renderCrumbs());
+		if (View==="span") {
+			return E(View,null,this.renderCrumbs());
+		} else {
+
+			return E(View,{style:{flex:1,flexDirection:'row',flexWrap:'wrap'}},this.renderCrumbs());
+		}
 	}
 })
 module.exports=BreadcrumbTOC;
