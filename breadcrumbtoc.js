@@ -35,8 +35,10 @@ var buildToc = function(toc) {
 	return toc;
 }
 var getChildren = function(toc,n) {
+ 
 	if (!toc[n]||!toc[n+1] ||toc[n+1].d!==toc[n].d+1) return [];
 	var out=[],next=n+1;
+
 	while (next) {
 		out.push(next);
 		if (!toc[next+1])break;
@@ -87,6 +89,7 @@ var BreadcrumbTOC=React.createClass({
 		for (i=1;i<tocitems.length;i++) {
 			if (this.props.toc[tocitems[i]].vpos>=vpos) return i-1;
 		}
+
 		return tocitems.length-1;
 	}
 	,renderCrumbs:function() {
@@ -94,10 +97,10 @@ var BreadcrumbTOC=React.createClass({
 		var cur=0,toc=this.props.toc,out=[],level=0,dropdowns=[];
 		var children=getChildren(toc,cur),nextchildren;
 		do {
-			var selected = this.closestItem(children,this.props.vpos) ;
-			cur=children[selected];
-
-			var items=children.map(function(child){
+				var selected = this.closestItem(children,this.props.vpos) ;
+				cur=children[selected];
+			
+				var items=children.map(function(child){
 				var hit=toc[child].hit;
 				if (this.props.hits && isNaN(hit) && this.props.treenodeHits) {
 					hit=this.props.treenodeHits( toc,this.props.hits,child);
@@ -123,6 +126,7 @@ var BreadcrumbTOC=React.createClass({
 					selected:d.selected,items:d.items,keyword:this.props.keyword})
 				)
 		}.bind(this));
+
 		return out;
 	}
 	,render:function(){
