@@ -62,6 +62,8 @@ var BreadcrumbTOC=React.createClass({
 		,treenodeHits:PT.func
 		,buttonClass:PT.string
 		,separator:PT.node
+		,append:PT.node
+		,prepend:PT.node
 	}
 	,componentWillReceiveProps:function(nextProps,nextState) {
 		if (nextProps.toc && !nextProps.toc.built) {
@@ -126,7 +128,8 @@ var BreadcrumbTOC=React.createClass({
 					selected:d.selected,items:d.items,keyword:this.props.keyword})
 				)
 		}.bind(this));
-
+		this.props.append&& out.push(this.props.append);
+		this.props.prepend&& out.unshift(this.props.prepend);
 		return out;
 	}
 	,render:function(){
