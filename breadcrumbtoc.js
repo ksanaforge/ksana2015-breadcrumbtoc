@@ -123,7 +123,7 @@ var BreadcrumbTOC=React.createClass({
 		out=dropdowns.map(function(d,idx){
 			return	E(View,{key:idx,style:{marginTop:4,marginBottom:4}},
 					E(Dropdown,{n:idx,total:dropdowns.length,onSelect:this.onSelect,level:d.level,
-					separator:d.nextchildren.length?this.props.separator:null,//last separator is not shown
+					separator:this.props.separator,
 					buttonClass:this.props.buttonClass,
 					selected:d.selected,items:d.items,keyword:this.props.keyword})
 				)

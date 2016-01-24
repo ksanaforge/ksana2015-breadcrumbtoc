@@ -30,7 +30,7 @@ var Popup=React.createClass({
 	}
 	,renderRow:function(item,unknown,idx){
 		idx=parseInt(idx);
-		var style={padding:3};
+		var style={padding:3,fontSize:20};
 		if (idx===this.props.selected) style=styles.selected;
 		return E(View,{style:{padding:3}},
 			E(TouchableHighlight,{underlayColor:'silver',
@@ -105,13 +105,14 @@ var BreadCrumbDropdown=React.createClass({
 		if (this.state.popup) style.color='black';
 
 		var t=item.t;
-		if (t.length>6) t=t.substr(0,5)+'...';
+		if (t.length>8) t=t.substr(0,7)+'...';
 		return (
 			E(View,{onLayout:this.onLayout},
 				this.renderPopup(),
+
 			 	E(TouchableHighlight,{onPress:this.select,
 			 		activeOpacity:0.5,underlayColor:'white'}
-					,E(Text,{style:style},"/"+t))
+					,E(Text,{style:style},(this.props.level?this.props.separator:"")+t))
 			)
 		);
 
@@ -119,10 +120,10 @@ var BreadCrumbDropdown=React.createClass({
 });
 
 var styles={
-	link:{color:'#007AFF'},
-	selected:{backgroundColor:'#70AAFF',padding:3},
-	popup:{padding:5,borderRadius:5,borderColor:'silver',
-	borderWidth:1,height:200,top:70,width:200,left:20,backgroundColor:'white'},
+	link:{color:'#007AFF',fontSize:20},
+	selected:{backgroundColor:'#70AAFF',padding:3,fontSize:20},
+	popup:{padding:5,borderRadius:5,borderColor:'silver',shadowOpacity:0.5,
+	borderWidth:1,height:280,top:70,width:280,left:20,backgroundColor:'white'},
 	dismissArea:{position:'absolute',width:1000,height:1000},
 	seperator:{height:1,backgroundColor:'silver'}
 }
