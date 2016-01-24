@@ -8,9 +8,10 @@ var {
 	Text,
 	TouchableHighlight ,
 	View,
-	ListView
+	ListView,
+	Dimensions
 }=React;
-
+var win=Dimensions.get('window');
 var Popup=React.createClass({
 	dismiss:function(){
 		this.props.onClose();
@@ -40,6 +41,8 @@ var Popup=React.createClass({
 		);
 	}
 	,render :function() {
+		styles.popup.left=this.props.x;
+		styles.popup.top=this.props.y;
 		return (
 			E(Modal,{transparent:true},
 				E(TouchableHighlight,{onPress:this.dismiss}
@@ -60,6 +63,8 @@ var BreadCrumbDropdown=React.createClass({
 		,level:PT.number.isRequired //which level
 		,keyword:PT.string
 	}
+	,popupX:0
+	,popupY:0
 	,getInitialState:function(){
 		return {popup:false};
 	}
@@ -95,24 +100,37 @@ var BreadCrumbDropdown=React.createClass({
 			return E(Popup,{level:this.props.level,
 				onSelect:this.props.onSelect,
 				selected:this.props.selected,
+				x:this.popupX,y:this.popupY,
 				onClose:this.closePopup,items:this.props.items});
 		}
 	}
+	,componentDidMount:function() {
+		if (!this.refs.me)return;
+		setTimeout(function(){
+			if(this.refs.me) this.refs.me.measure(function(ox,oy,width,height,px,py){
+				if (px+styles.popup.width>win.width) {
+					px=win.width-styles.popup.width;
+				}
+				this.popupX=px;
+				this.popupY=py+height;
+			}.bind(this));
+		}.bind(this),10);
+	}
 	,render:function(){
 		var item=this.props.items[this.props.selected];
-		if (!item) return E(View,null);
+		if (!item) return E(View,{ref:"me"});
 		var style=JSON.parse(JSON.stringify(styles.link));
 		if (this.state.popup) style.color='black';
 
 		var t=item.t;
-		if (t.length>8) t=t.substr(0,7)+'...';
+		if (this.props.level+1<this.props.total && t.length>7) t=t.substr(0,6)+'...';
 		return (
-			E(View,{onLayout:this.onLayout},
+			E(View,{ref:"me"},
 				this.renderPopup(),
 
 			 	E(TouchableHighlight,{onPress:this.select,
 			 		activeOpacity:0.5,underlayColor:'white'}
-					,E(Text,{style:style},(this.props.level?this.props.separator:"")+t))
+					,E(Text,{key:'text',style:style},(this.props.level?this.props.separator:"")+t))
 			)
 		);
 
