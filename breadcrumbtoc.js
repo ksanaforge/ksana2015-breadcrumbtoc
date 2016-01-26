@@ -64,6 +64,7 @@ var BreadcrumbTOC=React.createClass({
 		,separator:PT.node
 		,append:PT.node
 		,prepend:PT.node
+		,conv:PT.func
 	}
 	,componentWillReceiveProps:function(nextProps,nextState) {
 		if (nextProps.toc && !nextProps.toc.built) {
@@ -107,7 +108,9 @@ var BreadcrumbTOC=React.createClass({
 				if (this.props.hits && isNaN(hit) && this.props.treenodeHits) {
 					hit=this.props.treenodeHits( toc,this.props.hits,child);
 				}
-				return {t:toc[child].t,idx:child,hit:hit,vpos:toc[child].vpos};
+				var t=toc[child].t;
+				if(this.props.conv) t=this.props.conv(t)||t;
+				return {t:t,idx:child,hit:hit,vpos:toc[child].vpos};
 
 			}.bind(this));
 
