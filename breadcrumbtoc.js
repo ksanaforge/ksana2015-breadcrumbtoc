@@ -1,7 +1,12 @@
 var React,Dropdown,View;
 var pc=function(){
-	React=require("react");	
-	Dropdown=require("./dropdown_bs");
+	React=require("react");
+	const bootstrap_enabled = (typeof $ == 'function');
+	if (bootstrap_enabled) {
+		Dropdown=require("./dropdown_bs");
+	} else {
+		Dropdown=require("./dropdown_mui");
+	}
 	View="span"; 
 }
 
@@ -95,6 +100,9 @@ var BreadcrumbTOC=React.createClass({
 
 		return tocitems.length-1;
 	}
+	,closeOther:function(cb){
+		this.forceUpdate(cb);
+	}
 	,renderCrumbs:function() {
 		
 		var cur=0,toc=this.props.toc,out=[],level=0,dropdowns=[];
@@ -128,6 +136,7 @@ var BreadcrumbTOC=React.createClass({
 					E(Dropdown,{n:idx,total:dropdowns.length,onSelect:this.onSelect,level:d.level,
 					separator:this.props.separator,
 					buttonClass:this.props.buttonClass,
+					closeOther:this.closeOther,
 					selected:d.selected,items:d.items,keyword:this.props.keyword})
 				)
 		}.bind(this));
