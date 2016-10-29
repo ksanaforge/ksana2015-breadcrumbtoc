@@ -62,7 +62,7 @@ var BreadcrumbTOC=React.createClass({
 		toc:PT.array.isRequired
 		,hits:PT.array
 		,onSelect:PT.func
-		,vpos:PT.number  //jump with vpos
+		,pos:PT.number  //previously vpos
 		,keyword:PT.string
 		,treenodeHits:PT.func
 		,buttonClass:PT.string
@@ -91,11 +91,11 @@ var BreadcrumbTOC=React.createClass({
 		}
 	}
 	,onSelect:function(idx,children,level) {
-		this.props.onSelect && this.props.onSelect(idx, children[idx].vpos+1);//don't know why???
+		this.props.onSelect && this.props.onSelect(idx, children[idx].p+1);//don't know why???
 	}
-	,closestItem:function(tocitems,vpos) {
+	,closestItem:function(tocitems,pos) {
 		for (i=1;i<tocitems.length;i++) {
-			if (this.props.toc[tocitems[i]].vpos>=vpos) return i-1;
+			if (this.props.toc[tocitems[i]].p>=pos) return i-1;
 		}
 
 		return tocitems.length-1;
@@ -108,7 +108,7 @@ var BreadcrumbTOC=React.createClass({
 		var cur=0,toc=this.props.toc,out=[],level=0,dropdowns=[];
 		var children=getChildren(toc,cur),nextchildren;
 		do {
-				var selected = this.closestItem(children,this.props.vpos) ;
+				var selected = this.closestItem(children,this.props.pos) ;
 				cur=children[selected];
 			
 				var items=children.map(function(child){
@@ -118,7 +118,7 @@ var BreadcrumbTOC=React.createClass({
 				}
 				var t=toc[child].t;
 				if(this.props.conv) t=this.props.conv(t)||t;
-				return {t:t,idx:child,hit:hit,vpos:toc[child].vpos};
+				return {t:t,idx:child,hit:hit,p:toc[child].p};
 
 			}.bind(this));
 
@@ -136,7 +136,12 @@ var BreadcrumbTOC=React.createClass({
 					E(Dropdown,{n:idx,total:dropdowns.length,onSelect:this.onSelect,level:d.level,
 					separator:this.props.separator,
 					buttonClass:this.props.buttonClass,
+					buttonStyle:this.props.buttonStyle,
+					activeButtonStyle:this.props.activeButtonStyle,
 					closeOther:this.closeOther,
+					depth:idx,
+					maxDepth:dropdowns.length,
+					untrimDepth:this.props.untrimDepth||1, 
 					selected:d.selected,items:d.items,keyword:this.props.keyword})
 				)
 		}.bind(this));
@@ -152,5 +157,5 @@ var BreadcrumbTOC=React.createClass({
 			return E(View,{style:{flex:1,flexDirection:'row',flexWrap:'wrap'}},this.renderCrumbs());
 		}
 	}
-})
+});
 module.exports=BreadcrumbTOC;
