@@ -91,11 +91,11 @@ var BreadcrumbTOC=React.createClass({
 		}
 	}
 	,onSelect:function(idx,children,level) {
-		this.props.onSelect && this.props.onSelect(idx, children[idx].p+1);//don't know why???
+		this.props.onSelect && this.props.onSelect(idx, children[idx].p);//don't know why???
 	}
 	,closestItem:function(tocitems,pos) {
 		for (i=1;i<tocitems.length;i++) {
-			if (this.props.toc[tocitems[i]].p>=pos) return i-1;
+			if (this.props.toc[tocitems[i]].p>pos) return i-1;
 		}
 
 		return tocitems.length-1;
@@ -108,10 +108,10 @@ var BreadcrumbTOC=React.createClass({
 		var cur=0,toc=this.props.toc,out=[],level=0,dropdowns=[];
 		var children=getChildren(toc,cur),nextchildren;
 		do {
-				var selected = this.closestItem(children,this.props.pos) ;
-				cur=children[selected];
-			
-				var items=children.map(function(child){
+			var selected = this.closestItem(children,this.props.pos) ;
+			cur=children[selected];
+		
+			var items=children.map(function(child){
 				var hit=toc[child].hit;
 				if (this.props.hits && isNaN(hit) && this.props.treenodeHits) {
 					hit=this.props.treenodeHits( toc,this.props.hits,child);
@@ -123,7 +123,9 @@ var BreadcrumbTOC=React.createClass({
 			}.bind(this));
 
 			nextchildren=getChildren(toc,cur);
-			dropdowns.push({level:level,items:items,selected:selected,nextchildren:nextchildren});
+			if (items.length && this.props.pos>items[0].p) {
+				dropdowns.push({level,items,selected,nextchildren});
+			}
 
 			//if (out.length>5) break;
 			level++;
