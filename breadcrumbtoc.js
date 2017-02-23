@@ -124,7 +124,7 @@ var BreadcrumbTOC=React.createClass({
 
 			nextchildren=getChildren(toc,cur);
 			if (items.length && (dropdowns.length==0||this.props.pos>=items[0].p)) {
-				dropdowns.push({level,items,selected,nextchildren});
+				dropdowns.push({level:level,items:items,selected:selected,nextchildren:nextchildren});
 			} else break;
 
 			//if (out.length>5) break;
