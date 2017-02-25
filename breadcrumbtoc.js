@@ -134,10 +134,15 @@ var BreadcrumbTOC=React.createClass({
 		} while (true);
 
 		out=dropdowns.map(function(d,idx){
+			var buttonClass=null;
+			if (this.props.buttonClass) {
+				buttonClass=this.props.buttonClass+" "+this.props.buttonClass+(idx+1);
+			}
+
 			return	E(View,{key:idx,style:{marginTop:4,marginBottom:4}},
 					E(Dropdown,{n:idx,total:dropdowns.length,onSelect:this.onSelect,level:d.level,
 					separator:this.props.separator,
-					buttonClass:this.props.buttonClass,
+					buttonClass:buttonClass,
 					buttonStyle:this.props.buttonStyle,
 					activeButtonStyle:this.props.activeButtonStyle,
 					closeOther:this.closeOther,
