@@ -77,15 +77,17 @@ var BreadCrumbDropdownMUI=React.createClass({
 
 		//trim 
 		var label=this.props.items[this.props.selected].t;
+
 		if (this.props.depth+(this.props.untrimDepth||1)
-			<this.props.maxDepth && (label.length>5 ||label.match(/[ 　]/))) {
-			const m=label.match(/(.*)[ 　]/);
+			<this.props.maxDepth && (label.length>5 ||label.match(/(.*)[ 　、：]/))) {
+			const m=label.match(/(.*)[ 　、：]/); //remove after punc
 			if (m) {
-				label=m[1];	
+				label=m[1].substring(0,5);	
 			} else {
 				label=label.substring(0,5);
 			}
 		}
+		if (label.length>10) label=label.substr(0,10)+'...';
 		return E("span",{className:"mui-dropdown"},
 				E("button",{key:"drop","data-toggle":"dropdown",
 					className:dropdownbuttonclass,
