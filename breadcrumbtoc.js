@@ -26,9 +26,10 @@ var buildToc = function(toc) {
 	if (!toc || !toc.length || toc.built) return;
 	var depths=[];
  	var prev=0,j=0;
- 	for (var i=0;i<toc.length;i++) delete toc[i].n;
+ 	for (var i=0;i<toc.length;i++) if (toc[i].n) delete toc[i].n;
 	for (var i=0;i<toc.length;i++) {
-	    var depth=toc[i].d||toc[i].depth;
+
+	    var depth=toc[i].d;
 	    if (prev>depth) { //link to prev sibling
 	      if (depths[depth]) toc[depths[depth]].n = i;
 	      for (j=depth;j<prev;j++) depths[j]=0;
@@ -103,8 +104,7 @@ var BreadcrumbTOC=React.createClass({
 	,closeOther:function(cb){
 		this.forceUpdate(cb);
 	}
-	,renderCrumbs:function() {
-		
+	,renderCrumbs:function() {		
 		var cur=0,toc=this.props.toc,out=[],level=0,dropdowns=[];
 		var children=getChildren(toc,cur),nextchildren;
 		do {
